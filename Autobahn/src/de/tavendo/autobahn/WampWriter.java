@@ -39,6 +39,7 @@ import android.util.Log;
  */
 public class WampWriter extends WebSocketWriter {
 
+	
    private static final boolean DEBUG = true;
    private static final String TAG = WampWriter.class.getName();
 

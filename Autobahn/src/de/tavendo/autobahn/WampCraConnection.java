@@ -29,6 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
 import android.util.Base64;
 import android.util.Log;
 
+
 public class WampCraConnection extends WampConnection implements WampCra {
 
     public void authenticate(final AuthHandler authHandler, final String authKey, final String authSecret){

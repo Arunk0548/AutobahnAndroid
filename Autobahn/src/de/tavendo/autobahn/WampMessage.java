@@ -26,6 +26,7 @@ import java.util.HashMap;
  */
 public class WampMessage {
 
+	
 	public static final int MESSAGE_TYPE_HELLO = 1;
 	public static final int MESSAGE_TYPE_WELCOME = 2;
 	public static final int MESSAGE_TYPE_ABORT = 3;

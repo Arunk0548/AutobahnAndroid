@@ -191,8 +191,7 @@ public class WebSocketWriter extends Handler {
           }
       }           
       mBuffer.crlf();
-      if(DEBUG)
-    	  Log.w(TAG,mBuffer.toString());
+    
       
    }
 

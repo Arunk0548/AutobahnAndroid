@@ -20,6 +20,7 @@ package de.tavendo.autobahn;
 
 public interface WampCra extends Wamp {
     
+	
     /**
      * Auth handler.
      */

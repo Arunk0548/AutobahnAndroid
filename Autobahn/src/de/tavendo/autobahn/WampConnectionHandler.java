@@ -2,6 +2,7 @@ package de.tavendo.autobahn;
 
 public class WampConnectionHandler implements Wamp.ConnectionHandler {
 
+	
 	public void onOpen() {
 		// TODO Auto-generated method stub
 		

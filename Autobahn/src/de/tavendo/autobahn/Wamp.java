@@ -28,6 +28,7 @@ import org.codehaus.jackson.type.TypeReference;
  * WAMP interface.
  */
 public interface Wamp {
+	
 
     public static final String URI_WAMP_BASE = "http://api.wamp.ws/";
 

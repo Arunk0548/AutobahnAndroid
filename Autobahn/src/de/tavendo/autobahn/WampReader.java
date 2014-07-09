@@ -37,6 +37,7 @@ import de.tavendo.autobahn.WampConnection.CallMeta;
 import de.tavendo.autobahn.WampConnection.PubMeta;
 import de.tavendo.autobahn.WampConnection.SubMeta;
 
+
 /**
  * Autobahn WAMP reader, the receiving leg of a WAMP connection.
  */
@@ -45,6 +46,7 @@ public class WampReader extends WebSocketReader {
 	private static final boolean DEBUG = true;
 	private static final String TAG = WampReader.class.getName();
 
+	
 	// / Jackson JSON-to-object mapper.
 	private final ObjectMapper mJsonMapper;
 

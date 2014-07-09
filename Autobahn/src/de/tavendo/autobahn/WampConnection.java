@@ -31,6 +31,7 @@ import android.util.Log;
 import de.tavendo.autobahn.WampMessage.GoodBye;
 
 public class WampConnection extends WebSocketConnection implements Wamp {
+	
 
 	private static final boolean DEBUG = true;
 	private static final String TAG = WampConnection.class.getName();

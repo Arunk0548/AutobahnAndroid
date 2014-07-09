@@ -24,6 +24,7 @@ package de.tavendo.autobahn;
  */
 public class WebSocketConnectionHandler implements WebSocket.ConnectionHandler {
 
+	
    /**
     * Fired when the WebSockets connection has been established.
     * After this happened, messages may be sent.

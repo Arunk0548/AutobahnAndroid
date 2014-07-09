@@ -37,6 +37,7 @@ public class WebSocketConnection implements WebSocket {
    private static final boolean DEBUG = true;
    private static final String TAG = WebSocketConnection.class.getName();
 
+   
    protected Handler mMasterHandler;
 
    protected WebSocketReader mReader;

@@ -7,6 +7,7 @@ public interface WebSocket {
     */
    public interface ConnectionHandler {
 
+	   
 	   /**
 	    * Connection was closed normally.
 	    */
