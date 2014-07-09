@@ -176,13 +176,17 @@ public class WampMessage {
 	 */
 	public static class Call extends Message {
 		public String mCallId;
+		public HashMap<String, Object> mOptions;
 		public String mProcUri;
 		public Object[] mArgs;
+		public HashMap<String, Object> mArgumentsKw;
 
 		public Call(String callId, String procUri, int argCount) {
 			mCallId = callId;
+			mOptions = new HashMap<String, Object>();
 			mProcUri = procUri;
 			mArgs = new Object[argCount];
+			mArgumentsKw = new HashMap<String, Object>();
 		}
 	}
 
@@ -191,27 +195,50 @@ public class WampMessage {
 	 */
 	public static class CallResult extends Message {
 		public String mCallId;
+		public HashMap<String, Object> mOptions;
 		public Object mResult;
+		public HashMap<String, Object> mArgumentsKw;
 
-		public CallResult(String callId, Object result) {
+		public CallResult(String callId, HashMap<String, Object> options, Object result, HashMap<String, Object> argumentsKw) {
 			mCallId = callId;
+			mOptions = options;
 			mResult = result;
+			mArgumentsKw= argumentsKw;
 		}
 	}
 
+	public static class Error extends Message {
+		public int mRequestType;
+		public String mRequestId;
+		public Object mDetails;
+		public String mErrorUri;
+		public Object mArguments;
+		public Object mArgumentsKw;
+
+		
+		public Error(int requestType, String requestID, Object details, String errorUri, Object argument, Object argumentsKw)
+		{
+			mRequestType = requestType;
+			mRequestId = requestID;
+			mDetails = details;
+			mErrorUri = errorUri;
+			mArguments = argument;
+			mArgumentsKw = argumentsKw;
+		}
+		
+	}
 	/**
 	 * RPC failure response message. Server-to-client message.
 	 */
-	public static class CallError extends Message {
-		public String mCallId;
-		public String mErrorUri;
-		public String mErrorDesc;
+	public static class CallError extends Error {
 
-		public CallError(String callId, String errorUri, String errorDesc) {
-			mCallId = callId;
-			mErrorUri = errorUri;
-			mErrorDesc = errorDesc;
+		public CallError(int requestType, String requestID, Object details,
+				String errorUri,  Object argument, Object argumentsKw) {
+			super(requestType, requestID, details, errorUri, argument, argumentsKw);
+			
 		}
+				
+
 	}
 
 	/**
@@ -320,6 +347,24 @@ public class WampMessage {
 			
 		}
 	}
+	
+	/**
+	 * When the request for publication cannot be fulfilled by the Broker,
+	 *  the Broker sends back an ERROR message to the publisher
+	 *  
+	 *  Broker - to - client
+	 * @author arun.k
+	 *
+	 */
+	public static class PublishError extends Error{
+
+		public PublishError(int requestType, String requestID, Object details,
+				String errorUri, Object argument, Object argumentsKw) {
+			super(requestType, requestID, details, errorUri, argument, argumentsKw);
+			
+		}
+		
+	}
 
 	/**
 	 * Subscribe to topic URI request message. Client-to-server message.
@@ -352,6 +397,25 @@ public class WampMessage {
 			
 		}
 	}
+	
+	/**
+	 * When the request for subscription cannot be fulfilled by the Broker, 
+	 * the Broker sends back an ERROR message to the Subscriber
+	 * 
+	 * Server to Client
+	 * @author arun.k
+	 *
+	 */
+	public static class SubscribeError extends Error
+	{
+
+		public SubscribeError(int requestType, String requestID,
+				Object details, String errorUri,  Object argument, Object argumentsKw) {
+			super(requestType, requestID, details, errorUri, argument, argumentsKw);
+			
+		}
+		
+	}
 
 	/**
 	 * Unsubscribe from topic URI request message. Client-to-server message.
@@ -376,6 +440,25 @@ public class WampMessage {
 		public Unsubscribed(String unsubscribedRequestId) {
 			mUnsubscribedRequestId = unsubscribedRequestId;
 		}
+	}
+	
+	/**
+	 * When the request for unsubscribe cannot be fulfilled by the Broker,
+	 *  the Broker sends back an ERROR message to the unsubscriber.
+	 *  
+	 *  Server to Client.
+	 * @author arun.k
+	 *
+	 */
+	public static class UnsubscribeError extends Error
+	{
+
+		public UnsubscribeError(int requestType, String requestID,
+				Object details, String errorUri,  Object argument, Object argumentsKw) {
+			super(requestType, requestID, details, errorUri, argument, argumentsKw);
+		
+		}
+		
 	}
 
 	/**

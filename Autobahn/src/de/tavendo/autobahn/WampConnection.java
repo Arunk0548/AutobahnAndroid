@@ -353,13 +353,16 @@ public class WampConnection extends WebSocketConnection implements Wamp {
 
 			WampMessage.CallError callerror = (WampMessage.CallError) message;
 
-			if (mCalls.containsKey(callerror.mCallId)) {
-				CallMeta meta = mCalls.get(callerror.mCallId);
+			if (mCalls.containsKey(callerror.mRequestId)) {
+				CallMeta meta = mCalls.get(callerror.mRequestId);
 				if (meta.mResultHandler != null) {
+					String errorDescription = "";
+					if(callerror.mArguments != null)
+					 errorDescription = callerror.mArguments.toString();
 					meta.mResultHandler.onError(callerror.mErrorUri,
-							callerror.mErrorDesc);
+							errorDescription);
 				}
-				mCalls.remove(callerror.mCallId);
+				mCalls.remove(callerror.mRequestId);
 			}
 		} else if (message instanceof WampMessage.Event) {
 

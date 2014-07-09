@@ -20,6 +20,7 @@ package de.tavendo.autobahn;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,6 +37,7 @@ import android.util.Log;
 import de.tavendo.autobahn.WampConnection.CallMeta;
 import de.tavendo.autobahn.WampConnection.PubMeta;
 import de.tavendo.autobahn.WampConnection.SubMeta;
+import de.tavendo.autobahn.WampMessage.PublishError;
 
 /**
  * Autobahn WAMP reader, the receiving leg of a WAMP connection.
@@ -177,21 +179,41 @@ public class WampReader extends WebSocketReader {
 						token = parser.nextToken();
 						String callId = parser.getText();
 
+						// options , dict
+						token = parser.nextToken();
+						HashMap<String, Object> options = parser
+								.readValueAs(new TypeReference<HashMap<String, Object>>() {
+								});
+
 						// result
 						token = parser.nextToken();
 						Object result = null;
 
 						if (mCalls.containsKey(callId)) {
 
-							CallMeta meta = mCalls.get(callId);
-							if (meta.mResultClass != null) {
-								result = parser.readValueAs(meta.mResultClass);
-							} else if (meta.mResultTypeRef != null) {
-								result = parser
-										.readValueAs(meta.mResultTypeRef);
-							} else {
+							if (token != null && token != JsonToken.END_ARRAY) {
+								CallMeta meta = mCalls.get(callId);
+								if (meta.mResultClass != null) {
+									result = parser
+											.readValueAs(meta.mResultClass);
+								} else if (meta.mResultTypeRef != null) {
+									result = parser
+											.readValueAs(meta.mResultTypeRef);
+								} else {
+								}
+								token = parser.nextToken();
 							}
-							notify(new WampMessage.CallResult(callId, result));
+
+							// Argument list Kw
+							HashMap<String, Object> argumentListKw = null;
+							if (token != null && token != JsonToken.END_ARRAY) {
+								argumentListKw = parser
+										.readValueAs(new TypeReference<HashMap<String, Object>>() {
+										});
+								token = parser.nextToken();
+							}
+
+							notify(new WampMessage.CallResult(callId, options,result,argumentListKw));
 
 						} else {
 
@@ -199,8 +221,6 @@ public class WampReader extends WebSocketReader {
 								Log.d(TAG,
 										"WAMP RPC success return for unknown call ID received");
 						}
-
-						token = parser.nextToken();
 
 					} else if (msgType == WampMessage.MESSAGE_TYPE_SUBSCRIBED) {
 						// subscribe request id
@@ -269,31 +289,79 @@ public class WampReader extends WebSocketReader {
 						token = parser.nextToken();
 					} else if (msgType == WampMessage.MESSAGE_TYPE_ERROR) {
 
-						// call ID
+						if (DEBUG)
+							Log.d(TAG, "Error Received");
+						// Request Type
 						token = parser.nextToken();
-						String callId = parser.getText();
+						int type = parser.getIntValue();
 
-						// error URI
+						// Request Id
+						token = parser.nextToken();
+						long requestId = parser.getLongValue();
+
+						// details / options
+						token = parser.nextToken();
+						Object options = parser
+								.readValueAs(new TypeReference<HashMap<String, Object>>() {
+								});
+
+						// Error uri
 						token = parser.nextToken();
 						String errorUri = parser.getText();
 
-						// error description
+						// argument list
+						Object argumentList = null;
 						token = parser.nextToken();
-						String errorDesc = parser.getText();
+						if (token != null && token != JsonToken.END_ARRAY) {
+							argumentList = parser
+									.readValueAs(new TypeReference<ArrayList<String>>() {
+									});
 
-						if (mCalls.containsKey(callId)) {
-
-							notify(new WampMessage.CallError(callId, errorUri,
-									errorDesc));
-
-						} else {
-
-							if (DEBUG)
-								Log.d(TAG,
-										"WAMP RPC error return for unknown call ID received");
+							token = parser.nextToken();
 						}
 
-						token = parser.nextToken();
+						// argument kw list
+						Object argumentKwDict = null;
+						if (token != null && token != JsonToken.END_ARRAY) {
+							argumentKwDict = parser
+									.readValueAs(new TypeReference<HashMap<String, Object>>() {
+									});
+							token = parser.nextToken();
+						}
+
+						switch (type) {
+						case WampMessage.MESSAGE_TYPE_SUBSCRIBE:
+							notify(new PublishError(type,
+									String.valueOf(requestId), options,
+									errorUri, argumentList, argumentKwDict));
+							break;
+						case WampMessage.MESSAGE_TYPE_UNSUBSCRIBE:
+							notify(new WampMessage.UnsubscribeError(type,
+									String.valueOf(requestId), options,
+									errorUri, argumentList, argumentKwDict));
+							break;
+						case WampMessage.MESSAGE_TYPE_PUBLISH:
+							notify(new WampMessage.PublishError(type,
+									String.valueOf(requestId), options,
+									errorUri, argumentList, argumentKwDict));
+							break;
+						case WampMessage.MESSAGE_TYPE_REGISTER:
+							break;
+						case WampMessage.MESSAGE_TYPE_UNREGISTER:
+							break;
+						case WampMessage.MESSAGE_TYPE_INVOCATION:
+							break;
+						case WampMessage.MESSAGE_TYPE_CALL:
+							notify(new WampMessage.CallError(type,
+									String.valueOf(requestId), options,
+									errorUri, argumentList, argumentKwDict));
+							break;
+						default:
+							if (DEBUG)
+								Log.d(TAG,
+										"WAMP RPC error return for unknown request  ID received");
+							break;
+						}
 
 					} else if (msgType == WampMessage.MESSAGE_TYPE_EVENT) {
 

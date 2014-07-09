@@ -94,11 +94,15 @@ public class WampWriter extends WebSocketWriter {
 
             generator.writeStartArray();
             generator.writeNumber(WampMessage.MESSAGE_TYPE_CALL);
-            generator.writeString(call.mCallId);
+            generator.writeNumber(Long.valueOf(call.mCallId));
+            generator.writeObject(call.mOptions);
             generator.writeString(call.mProcUri);
-            for (Object arg : call.mArgs) {
-               generator.writeObject(arg);
+           if( call.mArgs != null) {
+               generator.writeObject(call.mArgs);
             }
+           if(call.mArgumentsKw != null)
+        	   generator.writeObject(call.mArgumentsKw);
+           
             generator.writeEndArray();
 
          } else if (msg instanceof WampMessage.Prefix) {
