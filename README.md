@@ -13,7 +13,8 @@ WAMP provides asynchronous **Remote Procedure Calls** and **Publish & Subscribe*
 
 WAMP is ideal for distributed , multi-client and server applications, such as multi-user database-drive business applications, sensor networks (IoT), instant messaging or MMOGs (massively multi-player online games) .
 
-> Note: **Autobahn**|Android implements version 1 of WAMP. Current versions of the other Autobahn project libraries already provide implementations of version 2 of the protocol, with substantially expanded capabilities. An update to **Autobahn**|Android is under development.
+> Note : **Autobahn**|Android implements version 2 of WAMP, An update to **Autobahn**|Android is under development.
+
 
 ## Show me some code
 
