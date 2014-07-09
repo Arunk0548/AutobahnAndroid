@@ -173,4 +173,12 @@ public class ByteBufferOutputStream extends OutputStream {
       write(0x0a);
    }
 
+   @Override
+   public synchronized String toString()
+   {
+	   String tostring = null;
+	tostring = new String(mBuffer.toString());
+	   
+	return tostring;
+   }
 }

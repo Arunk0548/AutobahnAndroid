@@ -191,6 +191,9 @@ public class WebSocketWriter extends Handler {
           }
       }           
       mBuffer.crlf();
+      if(DEBUG)
+    	  Log.w(TAG,mBuffer.toString());
+      
    }
 
 
@@ -315,6 +318,12 @@ public class WebSocketWriter extends Handler {
     */
    protected void sendFrame(int opcode, boolean fin, byte[] payload, int offset, int length) throws IOException {
 
+	   byte[] temp = new byte[length];
+	   
+	   System.arraycopy(payload, 0, temp, 0, length);
+	   
+	   Log.i(TAG," Writing.. : " + new String(temp));
+	   
       // first octet
       byte b0 = 0;
       if (fin) {

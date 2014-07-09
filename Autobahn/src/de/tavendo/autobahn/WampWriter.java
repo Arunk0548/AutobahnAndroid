@@ -102,13 +102,13 @@ public class WampWriter extends WebSocketWriter {
 
          } else if (msg instanceof WampMessage.Prefix) {
 
-            WampMessage.Prefix prefix = (WampMessage.Prefix) msg;
+           /* WampMessage.Prefix prefix = (WampMessage.Prefix) msg;
 
             generator.writeStartArray();
             generator.writeNumber(WampMessage.MESSAGE_TYPE_PREFIX);
             generator.writeString(prefix.mPrefix);
             generator.writeString(prefix.mUri);
-            generator.writeEndArray();
+            generator.writeEndArray();*/
 
          } else if (msg instanceof WampMessage.Subscribe) {
 
@@ -116,6 +116,8 @@ public class WampWriter extends WebSocketWriter {
 
             generator.writeStartArray();
             generator.writeNumber(WampMessage.MESSAGE_TYPE_SUBSCRIBE);
+            generator.writeNumber(Long.valueOf(subscribe.mRequestId));
+            generator.writeObject(subscribe.mOptions);
             generator.writeString(subscribe.mTopicUri);
             generator.writeEndArray();
 
@@ -125,7 +127,8 @@ public class WampWriter extends WebSocketWriter {
 
             generator.writeStartArray();
             generator.writeNumber(WampMessage.MESSAGE_TYPE_UNSUBSCRIBE);
-            generator.writeString(unsubscribe.mTopicUri);
+            generator.writeNumber(Long.valueOf(unsubscribe.mRequestId));
+            generator.writeNumber(Long.valueOf(unsubscribe.mSubscriptionId));
             generator.writeEndArray();
 
          } else if (msg instanceof WampMessage.Publish) {
@@ -134,11 +137,36 @@ public class WampWriter extends WebSocketWriter {
 
             generator.writeStartArray();
             generator.writeNumber(WampMessage.MESSAGE_TYPE_PUBLISH);
+            generator.writeNumber(Long.valueOf(publish.mRequestId));
+            generator.writeObject(publish.mOptions);
             generator.writeString(publish.mTopicUri);
-            generator.writeObject(publish.mEvent);
+            if(publish.mArgs != null){
+             	generator.writeObject(publish.mArgs);
+            }
+            if(publish.mArgumentsKw != null)
+                generator.writeObject(publish.mArgumentsKw);
             generator.writeEndArray();
 
-         } else {
+         }
+         else if(msg instanceof WampMessage.Hello)
+         {
+        	 WampMessage.Hello hello = (WampMessage.Hello)msg;
+        	  generator.writeStartArray();
+              generator.writeNumber(WampMessage.MESSAGE_TYPE_HELLO);
+              generator.writeString(hello.realm);
+              generator.writeObject(hello.details);
+              generator.writeEndArray();
+         } 
+         else if(msg instanceof WampMessage.GoodBye)
+         {
+        	 WampMessage.GoodBye goodbye = (WampMessage.GoodBye)msg;
+        	  generator.writeStartArray();
+              generator.writeNumber(WampMessage.MESSAGE_TYPE_GOODBYE);
+              generator.writeObject(goodbye.Details);
+              generator.writeString(goodbye.Reason);             
+              generator.writeEndArray();
+         } 
+         else {
 
             // this should not happen, but to be sure
             throw new WebSocketException("invalid message received by AutobahnWriter");
@@ -161,6 +189,7 @@ public class WampWriter extends WebSocketWriter {
       // a text message frame using the raw sendFrame() method
       sendFrame(1, true, mPayload.getByteArray(), 0, mPayload.size());
 
+      
       // cleanup generators resources
       generator.close();
    }

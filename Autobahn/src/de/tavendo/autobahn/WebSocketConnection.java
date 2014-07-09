@@ -114,6 +114,7 @@ public class WebSocketConnection implements WebSocket {
 					mWriter.forward(hs);
 
 					mPrevConnected = true;
+					
 
 				} catch (Exception e) {
 					onClose(WebSocketConnectionHandler.CLOSE_INTERNAL_ERROR,
@@ -453,6 +454,9 @@ public class WebSocketConnection implements WebSocket {
                     } else {
                        if (DEBUG) Log.d(TAG, "could not call onOpen() .. handler already NULL");
                     }
+            	   
+            	   //
+            	   //send hello message
                }
 
             } else if (msg.obj instanceof WebSocketMessage.ConnectionLost) {

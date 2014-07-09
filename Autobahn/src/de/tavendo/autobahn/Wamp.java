@@ -19,6 +19,7 @@
 package de.tavendo.autobahn;
 
 
+import java.util.HashMap;
 import java.util.List;
 import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.type.TypeReference;
@@ -101,7 +102,7 @@ public interface Wamp {
    /**
     * Disconnect from WAMP server.
     */
-   public void disconnect();
+   public void shutdown();
 
    /**
     * Check if currently connected to server.
@@ -170,8 +171,24 @@ public interface Wamp {
        *
        * @param topicUri   The URI or CURIE of the topic the event was published to.
        * @param event      The event, transformed into the type that was specified when subscribing.
+       * @param 			The optional pay load information sent by publisher
        */
-      public void onEvent(String topicUri, Object event);
+      public void onEvent(String topicUri, Object event, HashMap<String, Object> dict);
+      
+      /**
+       * Fired on failure of last request.
+       *
+       * @param errorUri   The URI or CURIE of the error that occurred.
+       * @param errorDesc  A human readable description of the error.
+       */
+      public void onError(String errorUri, String errorDesc);
+      
+      /**
+       * Fired on successful completion of current request.
+       *
+       * @param result     The request has been accepted and confirmed by broker.
+       */
+      public void onRequestAccepted(Object result);
    }
 
    /**
@@ -211,5 +228,16 @@ public interface Wamp {
     * @param event         The event to be published.
     */
    public void publish(String topicUri, Object event);
+   
+   /**
+    * Publish an event to the specified topic.
+    *
+    * @param topicUri      The URI or CURIE of the topic the event is to be published for.
+    * @param acknowledge   The acknowledgment to received on publication or error.
+    * @param eventType     The type that event get transformed into.
+    * @param eventHandler	The event handler.
+    * @param arguments 		The event to be publish
+    */
+   public void publish(String topicUri, boolean acknowledge, Class<?> eventType, EventHandler eventHandler , Object... arguments);
 
 }
