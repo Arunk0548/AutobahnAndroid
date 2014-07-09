@@ -11,7 +11,7 @@ WebSocket allows [bidirectional real-time messaging on the Web](http://tavendo.c
 
 WAMP provides asynchronous **Remote Procedure Calls** and **Publish & Subscribe** for applications in *one* protocol.
 
-WAMP is ideal for distributed, multi-client and server applications, such as multi-user database-drive business applications, sensor networks (IoT), instant messaging or MMOGs (massively multi-player online games) .
+WAMP is ideal for distributed , multi-client and server applications, such as multi-user database-drive business applications, sensor networks (IoT), instant messaging or MMOGs (massively multi-player online games) .
 
 > Note: **Autobahn**|Android implements version 1 of WAMP. Current versions of the other Autobahn project libraries already provide implementations of version 2 of the protocol, with substantially expanded capabilities. An update to **Autobahn**|Android is under development.
 
