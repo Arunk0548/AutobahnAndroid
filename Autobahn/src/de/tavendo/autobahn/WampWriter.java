@@ -21,15 +21,15 @@ package de.tavendo.autobahn;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.MappingJsonFactory;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 
 /**
  * Autobahn WAMP writer, the transmitting leg of a WAMP connection.
@@ -81,7 +81,7 @@ public class WampWriter extends WebSocketWriter {
       mPayload.reset();
 
       // creating a JSON generator is supposed to be a light-weight operation
-      JsonGenerator generator = mJsonFactory.createJsonGenerator(mPayload);
+      JsonGenerator generator = mJsonFactory.createGenerator(mPayload); //mJsonFactory.createJsonGenerator(mPayload);
 
       try {
 

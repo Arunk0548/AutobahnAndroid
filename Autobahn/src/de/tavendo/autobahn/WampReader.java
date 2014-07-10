@@ -24,16 +24,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-
 import android.os.Handler;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.tavendo.autobahn.WampConnection.CallMeta;
 import de.tavendo.autobahn.WampConnection.PubMeta;
 import de.tavendo.autobahn.WampConnection.SubMeta;
@@ -99,11 +100,8 @@ public class WampReader extends WebSocketReader {
 		mRequestTopicMap = reqtopicmap;
 
 		mJsonMapper = new ObjectMapper();
-		mJsonMapper
-				.configure(
-						DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,
-						false);
-		mJsonFactory = mJsonMapper.getJsonFactory();
+		mJsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	      mJsonFactory = mJsonMapper.getFactory(); //mJsonMapper.getJsonFactory(); 
 
 		if (DEBUG)
 			Log.d(TAG, "created");
@@ -132,7 +130,7 @@ public class WampReader extends WebSocketReader {
 		try {
 
 			// create parser on top of raw UTF-8 payload
-			JsonParser parser = mJsonFactory.createJsonParser(payload);
+			JsonParser parser =  mJsonFactory.createParser(payload); //mJsonFactory.createJsonParser(payload);
 			JsonToken token = null;
 
 			// all Autobahn messages are JSON arrays

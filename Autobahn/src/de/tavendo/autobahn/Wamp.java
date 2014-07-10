@@ -21,8 +21,10 @@ package de.tavendo.autobahn;
 
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.type.TypeReference;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * WAMP interface.

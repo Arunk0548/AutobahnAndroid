@@ -24,10 +24,12 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.type.TypeReference;
 
 import android.os.HandlerThread;
 import android.util.Log;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import de.tavendo.autobahn.WampMessage.GoodBye;
 
 public class WampConnection extends WebSocketConnection implements Wamp {
@@ -328,8 +330,8 @@ public class WampConnection extends WebSocketConnection implements Wamp {
 		isShutdown = true;
 		
 		WampMessage.GoodBye goodbye = new GoodBye(new HashMap<String, Object>(), "wamp.error.goodbye_and_out");
-		
-		mWriter.forward(goodbye);
+		if(mWriter != null)
+			mWriter.forward(goodbye);
 	}
 
 	/**
